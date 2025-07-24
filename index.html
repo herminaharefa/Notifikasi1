@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Notifikasi IT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .employee-section h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .it-section h2 {
+            color: #2d3748;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .notification-area {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .notification {
+            background: white;
+            border-left: 4px solid #f56565;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease;
+        }
+
+        .notification.high { border-left-color: #f56565; }
+        .notification.medium { border-left-color: #ed8936; }
+        .notification.low { border-left-color: #48bb78; }
+
+        .notification-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .priority {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority.high { background: #fed7d7; color: #c53030; }
+        .priority.medium { background: #feebc8; color: #c05621; }
+        .priority.low { background: #c6f6d5; color: #2f855a; }
+
+        .timestamp {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .notification-content h4 {
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .notification-content p {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-accept {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-complete {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #718096;
+            padding: 40px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Employee Section -->
+        <div class="card employee-section">
+            <h2>🎫 Laporkan Masalah IT</h2>
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label for="nama">Nama Karyawan</label>
+                    <input type="text" id="nama" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="departemen">Departemen</label>
+                    <select id="departemen" required>
+                        <option value="">Pilih Departemen</option>
+                        <option value="Keuangan">Keuangan</option>
+                        <option value="HRD">HRD</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Operasional">Operasional</option>
+                        <option value="Manajemen">Manajemen</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="masalah">Jenis Masalah</label>
+                    <select id="masalah" required>
+                        <option value="">Pilih Jenis Masalah</option>
+                        <option value="Printer Rusak">🖨️ Printer Rusak</option>
+                        <option value="Laptop Tidak Nyala">💻 Laptop Tidak Nyala</option>
+                        <option value="Internet Lambat">🌐 Internet Lambat</option>
+                        <option value="Software Error">⚠️ Software Error</option>
+                        <option value="Email Bermasalah">📧 Email Bermasalah</option>
+                        <option value="Password Reset">🔐 Password Reset</option>
+                        <option value="Hardware Lainnya">🔧 Hardware Lainnya</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="prioritas">Tingkat Prioritas</label>
+                    <select id="prioritas" required>
+                        <option value="">Pilih Prioritas</option>
+                        <option value="high">🔴 Tinggi (Urgent)</option>
+                        <option value="medium">🟡 Sedang (Normal)</option>
+                        <option value="low">🟢 Rendah (Bisa Ditunda)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi Detail</label>
+                    <textarea id="deskripsi" placeholder="Jelaskan masalah secara detail..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lokasi">Lokasi</label>
+                    <input type="text" id="lokasi" placeholder="Contoh: Lantai 2, Ruang Marketing" required>
+                </div>
+
+                <button type="submit" class="btn">📨 Kirim Laporan</button>
+            </form>
+        </div>
+
+        <!-- IT Dashboard Section -->
+        <div class="card it-section">
+            <h2>🖥️ Dashboard IT</h2>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTickets">0</div>
+                    <div class="stat-label">Total Tiket</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingTickets">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedTickets">0</div>
+                    <div class="stat-label">Selesai</div>
+                </div>
+            </div>
+
+            <div class="notification-area" id="notificationArea">
+                <div class="empty-state">
+                    <p>Belum ada notifikasi masalah IT</p>
+                    <small>Sistem siap menerima laporan dari karyawan</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tickets = [];
+        let ticketId = 1;
+        let completedCount = 0;
+
+        const form = document.getElementById('ticketForm');
+        const notificationArea = document.getElementById('notificationArea');
+        const totalTicketsEl = document.getElementById('totalTickets');
+        const pendingTicketsEl = document.getElementById('pendingTickets');
+        const completedTicketsEl = document.getElementById('completedTickets');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const ticket = {
+                id: ticketId++,
+                nama: document.getElementById('nama').value,
+                departemen: document.getElementById('departemen').value,
+                masalah: document.getElementById('masalah').value,
+                prioritas: document.getElementById('prioritas').value,
+                deskripsi: document.getElementById('deskripsi').value,
+                lokasi: document.getElementById('lokasi').value,
+                timestamp: new Date(),
+                status: 'pending'
+            };
+
+            tickets.push(ticket);
+            addNotification(ticket);
+            updateStats();
+            
+            // Reset form
+            form.reset();
+            
+            // Show success message
+            alert('✅ Laporan berhasil dikirim ke Tim IT!');
+        });
+
+        function addNotification(ticket) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${ticket.prioritas}`;
+            notification.id = `ticket-${ticket.id}`;
+            
+            const priorityText = {
+                'high': 'TINGGI',
+                'medium': 'SEDANG',
+                'low': 'RENDAH'
+            };
+
+            notification.innerHTML = `
+                <div class="notification-header">
+                    <span class="priority ${ticket.prioritas}">${priorityText[ticket.prioritas]}</span>
+                    <span class="timestamp">${ticket.timestamp.toLocaleString('id-ID')}</span>
+                </div>
+                <div class="notification-content">
+                    <h4>${ticket.masalah}</h4>
+                    <p><strong>Pelapor:</strong> ${ticket.nama} (${ticket.departemen})</p>
+                    <p><strong>Lokasi:</strong> ${ticket.lokasi}</p>
+                    <p><strong>Deskripsi:</strong> ${ticket.deskripsi}</p>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-small btn-accept" onclick="acceptTicket(${ticket.id})">✅ Terima</button>
+                    <button class="btn-small btn-complete" onclick="completeTicket(${ticket.id})">✔️ Selesai</button>
+                </div>
+            `;
+
+            // Remove empty state if exists
+            const emptyState = notificationArea.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            notificationArea.insertBefore(notification, notificationArea.firstChild);
+        }
+
+        function acceptTicket(id) {
+            const ticketEl = document.getElementById(`ticket-${id}`);
+            const acceptBtn = ticketEl.querySelector('.btn-accept');
+            acceptBtn.textContent = '🔧 Sedang Dikerjakan';
+            acceptBtn.style.background = '#ed8936';
+            acceptBtn.onclick = null;
+            
+            // Update ticket status
+            const ticket = tickets.find(t => t.id === id);
+            if (ticket) ticket.status = 'in-progress';
+        }
+
+        function completeTicket(id) {
+            const ticketEl = document.getElementById(`ticket-${id}`);
+            ticketEl.style.opacity = '0.5';
+            ticketEl.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                ticketEl.remove();
+                completedCount++;
+                updateStats();
+                
+                // Show empty state if no tickets left
+                if (notificationArea.children.length === 0) {
+                    notificationArea.innerHTML = `
+                        <div class="empty-state">
+                            <p>Semua tiket telah diselesaikan!</p>
+                            <small>Siap menerima laporan baru</small>
+                        </div>
+                    `;
+                }
+            }, 300);
+
+            // Update ticket status
+            const ticket = tickets.find(t => t.id === id);
+            if (ticket) ticket.status = 'completed';
+        }
+
+        function updateStats() {
+            const pendingTickets = tickets.filter(t => t.status !== 'completed').length;
+            
+            totalTicketsEl.textContent = tickets.length;
+            pendingTicketsEl.textContent = pendingTickets;
+            completedTicketsEl.textContent = completedCount;
+        }
+
+        // Demo data untuk menunjukkan sistem bekerja
+        setTimeout(() => {
+            if (tickets.length === 0) {
+                // Add sample ticket
+                const sampleTicket = {
+                    id: ticketId++,
+                    nama: 'Demo User',
+                    departemen: 'Marketing',
+                    masalah: '🖨️ Printer Rusak',
+                    prioritas: 'high',
+                    deskripsi: 'Printer tidak bisa mencetak, lampu error menyala merah',
+                    lokasi: 'Lantai 2, Ruang Marketing',
+                    timestamp: new Date(),
+                    status: 'pending'
+                };
+                
+                tickets.push(sampleTicket);
+                addNotification(sampleTicket);
+                updateStats();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
